@@ -6,7 +6,7 @@ import {
   createStyles,
   useMantineColorScheme,
 } from "@mantine/core";
-import LoginForm from "../LoginForm";
+import AuthForm from "../AuthForm";
 import pi from "../../assets/pi.svg";
 
 const useStyles = createStyles((theme) => ({
@@ -44,7 +44,7 @@ const LandingPageView = () => {
         spacing={100}
         className={classes.grid_container}
       >
-        <LoginForm />
+        <AuthForm />
         <Flex w={"80%"} align="center" className={classes.pi_container}>
           <Image
             src={pi}
