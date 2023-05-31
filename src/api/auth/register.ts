@@ -1,17 +1,28 @@
-import { redirect } from "react-router-dom";
 
-type RegisterFields = {
-    email:string;
-    password:string;
-    repeated_password:string
-}
+import { RegisterFields } from "./auth_types";
 
-export const register = (data:RegisterFields) => {
-    const loginData = {
-        email:data.email,
-        password:data.password,
-        repeatedPassword:data.repeated_password
+
+export const register = async (data: RegisterFields) => {
+  const registerData = {
+    email: data.email,
+    password: data.password,
+    confirmPassword: data.confirmPassword,
+  };
+
+  try {
+    const response = await fetch("http://localhost:5000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(registerData),
+    });
+    if(response.status === 500) {
+        throw new Error("test")
     }
-    console.log(loginData)
-    return redirect("/rr")
-}
+
+    return response
+  } catch (error) {
+    
+  }
+};

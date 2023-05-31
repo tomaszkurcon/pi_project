@@ -1,7 +1,4 @@
-type LoginFields = {
-  email: string;
-  password: string;
-};
+import { LoginFields } from "./auth_types";
 
 export async function login(data: LoginFields) {
   const loginData = {
@@ -10,7 +7,7 @@ export async function login(data: LoginFields) {
   };
   console.log(loginData);
   try {
-    const response = await fetch("http://localhost:8080/login", {
+    const response = await fetch("http://localhost:5000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
