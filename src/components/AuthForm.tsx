@@ -15,13 +15,14 @@ import {
 } from "@mantine/core";
 import { useForm, isEmail } from "@mantine/form";
 import { Link, useSearchParams } from "react-router-dom";
-import { login } from "../api/auth/login";
 import { register } from "../api/auth/register";
-import { LoginFields, RegisterFields } from "../api/auth/auth_types";
+import {  RegisterFields } from "../api/auth/auth_types";
 import { Toaster, toast } from "react-hot-toast";
+import { useLogin } from "./hooks/useLogin";
 
 const AuthForm = (props: PaperProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const login  = useLogin();
   const type = searchParams.get("mode") === "register" ? "register" : "login";
   const form = useForm({
     initialValues: {
@@ -36,14 +37,13 @@ const AuthForm = (props: PaperProps) => {
   });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   useEffect(() => setIsOpen(true), []);
-  const loginHandler = (values: LoginFields) => {
-    login(values);
-  };
+
   const registerHandler = async (values: RegisterFields) => {
     const response = await register(values);
     const data = await response?.json();
     if (response?.status === 201) {
       setSearchParams({ mode: "login" });
+      form.reset();
       toast.success(data.msg);
     } else {
       toast.error(data.msg);
@@ -82,7 +82,7 @@ const AuthForm = (props: PaperProps) => {
         <Paper radius="md" p={40} withBorder {...props} maw={500} w="100%">
           <form
             onSubmit={form.onSubmit((values) => {
-              type === "login" ? loginHandler(values) : registerHandler(values);
+              type === "login" ? login(values) : registerHandler(values);
             })}
           >
             <Stack>

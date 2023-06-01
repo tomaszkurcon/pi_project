@@ -17,6 +17,7 @@ export const register = async (data: RegisterFields) => {
       },
       body: JSON.stringify(registerData),
     });
+    
     if(response.status === 500) {
         throw new Error("test")
     }
