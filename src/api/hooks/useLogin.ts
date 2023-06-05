@@ -1,5 +1,5 @@
 import { toast } from "react-hot-toast";
-import { LoginFields } from "../../api/auth/auth_types";
+import { LoginFields } from "../auth/auth_types";
 import { useAuthContext } from "./useAuthContext";
 
 export const useLogin = () => {

@@ -1,10 +1,18 @@
 import { createStyles, Navbar, getStylesRef, rem, Burger } from "@mantine/core";
-import { IconBellRinging, IconSettings, IconLogout } from "@tabler/icons-react";
-import { useLogout } from "../hooks/useLogout";
+import {
+  IconSettings,
+  IconLogout,
+  IconAwardFilled,
+  IconTorii,
+} from "@tabler/icons-react";
+import { useLogout } from "../../api/hooks/useLogout";
 import { useDisclosure } from "@mantine/hooks";
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
+  dashboardContainer: {
+    display: "flex",
+  },
   header: {
     paddingBottom: theme.spacing.md,
     marginBottom: `calc(${theme.spacing.md} * 1.5)`,
@@ -27,6 +35,10 @@ const useStyles = createStyles((theme) => ({
   },
   navbar: {
     transition: "transform 0.2s ease-out",
+    [theme.fn.smallerThan("sm")]: {
+      position: "absolute",
+      top: "60px",
+    },
   },
   navbarSlideInAnimation: {
     [theme.fn.smallerThan("sm")]: {
@@ -86,14 +98,15 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const data = [
-  { link: "/", label: "Play", icon: IconBellRinging },
+  { link: "/", label: "Play", icon: IconTorii },
+  { link: "/rank", label: "Ranking", icon: IconAwardFilled },
   { link: "/settings", label: "User Settings", icon: IconSettings },
 ];
 
 const DashboardView = () => {
   const [opened, { toggle }] = useDisclosure(true);
   const logout = useLogout();
-  const { classes, cx } = useStyles();
+  const { classes } = useStyles();
   const links = data.map((item) => (
     <NavLink
       className={({ isActive }) => {
@@ -115,23 +128,25 @@ const DashboardView = () => {
         className={classes.burger}
         m={"lg"}
       />
-      <Navbar
-        height={700}
-        width={{ sm: 300 }}
-        p="md"
-        className={`${classes.navbar} ${
-          opened && classes.navbarSlideInAnimation
-        }`}
-      >
-        <Navbar.Section grow>{links}</Navbar.Section>
+      <div className={classes.dashboardContainer}>
+        <Navbar
+          width={{ sm: 300 }}
+          p="md"
+          className={`${classes.navbar} ${
+            opened && classes.navbarSlideInAnimation
+          }`}
+        >
+          <Navbar.Section grow>{links}</Navbar.Section>
 
-        <Navbar.Section className={classes.footer}>
-          <a className={classes.link} onClick={() => logout()}>
-            <IconLogout className={classes.linkIcon} stroke={1.5} />
-            <span>Logout</span>
-          </a>
-        </Navbar.Section>
-      </Navbar>
+          <Navbar.Section className={classes.footer}>
+            <span className={classes.link} onClick={() => logout()}>
+              <IconLogout className={classes.linkIcon} stroke={1.5} />
+              <span>Logout</span>
+            </span>
+          </Navbar.Section>
+        </Navbar>
+        <Outlet />
+      </div>
     </div>
   );
 };

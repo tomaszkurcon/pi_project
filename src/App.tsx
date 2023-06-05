@@ -3,8 +3,12 @@ import ThemeProvider from "./components/theme/ThemeProvider";
 import LandingPageView from "./components/views/LandingPageView";
 import View404 from "./components/views/View404";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
-import { useAuthContext } from "./components/hooks/useAuthContext";
+import { useAuthContext } from "./api/hooks/useAuthContext";
 import DashboardView from "./components/views/DashboardView";
+import SettingsView from "./components/views/SettingsView";
+import MainTemplate from "./components/templates/MainTemplate";
+import WritePiView from "./components/views/WritePiView";
+import RankingView from "./components/views/RankingView";
 
 const App = () => {
   const { user } = useAuthContext();
@@ -14,7 +18,13 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route element={<ProtectedRoute user={user} />}>
-            <Route path="/" element={<DashboardView />} />
+            <Route path="/" element={<DashboardView />}>
+              <Route path="/" element={<MainTemplate />}>
+                <Route index element={<WritePiView />} />
+                <Route path="/rank" element={<RankingView/>} />
+                <Route path="/settings" element={<SettingsView />} />
+              </Route>
+            </Route>
           </Route>
           <Route
             path="/auth"
