@@ -12,7 +12,7 @@ import RankingView from "./components/views/RankingView";
 
 const App = () => {
   const { user } = useAuthContext();
-  console.log("meine usere", user);
+
   return (
     <ThemeProvider>
       <BrowserRouter>
