@@ -1,6 +1,7 @@
 import { toast } from "react-hot-toast";
 import { LoginFields } from "../auth/auth_types";
 import { useAuthContext } from "./useAuthContext";
+import { API_URL } from "../../config/env";
 
 export const useLogin = () => {
   const { dispatch } = useAuthContext();
@@ -10,7 +11,7 @@ export const useLogin = () => {
       password: data.password,
     };
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

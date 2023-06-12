@@ -5,7 +5,7 @@ import {
   IconAwardFilled,
   IconTorii,
 } from "@tabler/icons-react";
-import { useLogout } from "../../api/hooks/useLogout";
+import { useLogout } from "../../api/api_hooks/useLogout";
 import { useDisclosure } from "@mantine/hooks";
 import { NavLink, Outlet } from "react-router-dom";
 

@@ -1,10 +1,14 @@
 import {
   Box,
+  Button,
   Card,
   Center,
   Code,
+  Divider,
   Flex,
+  Modal,
   PinInput,
+  Portal,
   Stack,
   Text,
   Title,
@@ -14,7 +18,9 @@ import {
 import { IconCheck, IconClockHour4, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import Timer from "../common/Timer";
+import Timer, { TimeType } from "../common/Timer";
+import { useDisclosure } from "@mantine/hooks";
+import { PI } from "../utils/pi";
 
 const useStyles = createStyles((theme) => ({
   valid_input: {
@@ -24,13 +30,23 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const WritePiView = () => {
+type WritePiViewProps = {
+  setKey: React.Dispatch<React.SetStateAction<number>>;
+};
+const WritePiView = ({ setKey }: WritePiViewProps) => {
   const { classes } = useStyles();
   const theme = useMantineTheme();
   const [mistakesCounter, setMistakesCounter] = useState(0);
   const [enteredDigitsCounter, setEnteredDigitsCounter] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const pi = "141592653";
+  const [canEdit, setCanEdit] = useState(true);
+
+  const [time, setTime] = useState<TimeType>({
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
   const onChangeHandler = (
     ev: string,
     index: number,
@@ -52,14 +68,22 @@ const WritePiView = () => {
     if (fieldState.error) {
       methods.clearErrors(`digitInputs.${index}.value`);
     }
-    if (pi[index] != ev) {
+    if (PI[index] != ev) {
       methods.setError(`digitInputs.${index}.value`, {});
       setMistakesCounter((prev) => prev + 1);
-      console.log(mistakesCounter);
     }
     if (fields_length == index + 1) {
       append({ value: "" });
     }
+  };
+  const onEndAttemptHandler = () => {
+    //TODO
+    //SAVE DATA TO DATEBASE
+    setKey((prev) => prev + 1);
+    
+  };
+  const getTime = (time: TimeType) => {
+    setTime(time);
   };
 
   const { control, register, ...methods } = useForm({
@@ -71,7 +95,7 @@ const WritePiView = () => {
     control,
     name: "digitInputs",
   });
-
+  const [opened, { open, close }] = useDisclosure(false);
   return (
     <>
       <Card shadow="sm" padding="lg" radius="md">
@@ -80,7 +104,7 @@ const WritePiView = () => {
             <Title order={2} color={theme.primaryColor}>
               Check how many digits of number 𝝅 do you actually remember!
             </Title>
-            <Text>To begin just start writing</Text>
+            <Text fz="xl">To begin just start writing</Text>
           </Stack>
         </Center>
 
@@ -91,25 +115,66 @@ const WritePiView = () => {
             w={"100%"}
             wrap="wrap"
           >
-            <Flex align="center" gap={5}>
-              <IconClockHour4 color="lightBlue" size={40} />
-              <Text>Czas: </Text>
-              <Timer isRunning={isRunning} />
-              <button
-                onClick={() => {
-                  setIsRunning(false);
-                }}
-              >
-                stop
-              </button>
+            <Flex
+              align="center"
+              gap={20}
+              wrap="wrap"
+              sx={(theme) => ({
+                [theme.fn.smallerThan("sm")]: { marginBottom: 20 },
+              })}
+            >
+              <Flex gap={5} align="center">
+                <IconClockHour4 color="lightBlue" size={40} />
+                <Text fz="lg">Time: </Text>
+                <Timer isRunning={isRunning} getTime={getTime} />
+              </Flex>
+
+              {!canEdit ? (
+                <Flex gap={10}>
+                  <Button
+                    color="green"
+                    radius="md"
+                    compact
+                    onClick={() => {
+                      setIsRunning(true);
+                      setCanEdit(true);
+                    }}
+                  >
+                    RERUN
+                  </Button>
+                  <Button
+                    color="red"
+                    radius="md"
+                    compact
+                    onClick={() => {
+                      open();
+                    }}
+                  >
+                    END ATTEMPT
+                  </Button>
+                </Flex>
+              ) : (
+                <Button
+                  color="red"
+                  disabled={!isRunning}
+                  radius="md"
+                  compact
+                  onClick={() => {
+                    setIsRunning(false);
+                    setCanEdit(false);
+                  }}
+                >
+                  STOP
+                </Button>
+              )}
             </Flex>
             <Flex align="center" gap={5}>
               <IconCheck color="green" size={40} />
-              <Text>Wpisane litery: {enteredDigitsCounter}</Text>
+              <Text fz="lg">Entered Digits: {enteredDigitsCounter}</Text>
             </Flex>
             <Flex align="center" gap={5}>
               <IconX color="red" size={40} />
-              <Text>Popełnione błędy: {mistakesCounter}</Text>
+              <Text fz="lg">Mistakes: {mistakesCounter}</Text>
             </Flex>
           </Flex>
         </Center>
@@ -129,13 +194,8 @@ const WritePiView = () => {
             render={({ field: { ref, value, ...field }, fieldState }) => {
               const { error } = fieldState;
               let error2 = error ? true : false;
-              let isDirty = true;
-              if (value == "") {
-                isDirty = false;
-              }
-
+              let isDirty = value == "" ? false : true;
               let isValid = !error && isDirty;
-
               return (
                 <PinInput
                   {...field}
@@ -143,17 +203,61 @@ const WritePiView = () => {
                   error={error2}
                   length={1}
                   placeholder=""
+                  value={value}
                   onChange={(ev) => onChangeHandler(ev, index, fields.length)}
                   autoFocus={index > 0 && true}
                   classNames={isValid ? { input: classes.valid_input } : {}}
+                  disabled={!canEdit}
                 />
               );
             }}
           />
         ))}
       </Flex>
+      <Portal target="#modals">
+        <Modal
+          opened={opened}
+          onClose={close}
+          zIndex={1000}
+          centered
+          closeOnClickOutside={false}
+          closeOnEscape={false}
+          withCloseButton={false}
+        >
+          <Card>
+            <Stack>
+              <Flex gap={5} align="center">
+                <IconClockHour4 color="lightBlue" size={40} />
+                <Text fz="lg">
+                  Time: {time.hours}:{time.minutes}:{time.seconds}
+                </Text>
+              </Flex>
+              <Divider />
+              <Flex align="center" gap={5}>
+                <IconCheck color="green" size={40} />
+                <Text fz="lg">Entered digits: {enteredDigitsCounter}</Text>
+              </Flex>
+              <Divider />
+              <Flex align="center" gap={5}>
+                <IconX color="red" size={40} />
+                <Text fz="lg">Mistakes: {mistakesCounter}</Text>
+              </Flex>
+            </Stack>
+            <Center mt={40}>
+              <Button radius="lg" onClick={() => onEndAttemptHandler()}>
+                Restart
+              </Button>
+            </Center>
+          </Card>
+        </Modal>
+      </Portal>
     </>
   );
 };
 
-export default WritePiView;
+const WritePiViewWithKey = () => {
+  const [attemptId, setAttemptId] = useState<number>(1);
+  return <WritePiView key={attemptId} setKey={setAttemptId} />;
+};
+
+export default WritePiViewWithKey;

@@ -9,8 +9,9 @@ export type TimeType = {
 };
 type TimerProps = {
   isRunning: boolean;
+  getTime?: (time: TimeType) => void;
 };
-const Timer = ({ isRunning }: TimerProps) => {
+const Timer = ({ isRunning, getTime }: TimerProps) => {
   const [seconds, setSeconds] = useState(0);
   const [time, setTime] = useState<TimeType>({
     seconds: 0,
@@ -19,9 +20,9 @@ const Timer = ({ isRunning }: TimerProps) => {
   });
   useEffect(() => {
     let interval: NodeJS.Timer;
-    if (isRunning) {
-      interval = setInterval(() => setSeconds((prev) => prev + 1), 1000);
-    }
+    isRunning
+      ? (interval = setInterval(() => setSeconds((prev) => prev + 1), 1000))
+      : getTime && getTime(time);
 
     return () => {
       clearInterval(interval);
@@ -31,7 +32,7 @@ const Timer = ({ isRunning }: TimerProps) => {
     setTime(formatSecondsToTime(seconds));
   }, [seconds]);
   return (
-    <Text>
+    <Text fz="lg">
       {time.hours}:{time.minutes}:{time.seconds}
     </Text>
   );
