@@ -1,6 +1,13 @@
-const RankingView = () => {
+import { useGetFetch } from "../../api/api_hooks/useGetFetch";
 
-    return <div>rank</div>
-}
+type record = {
+  test: number;
+};
+const RankingView = () => {
+  const { data, loading } = useGetFetch<record>("test");
+  console.log(data, loading);
+
+  return <div>{loading ? "loading" : "no loading"}</div>;
+};
 
 export default RankingView;

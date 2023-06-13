@@ -9,7 +9,7 @@ export type TimeType = {
 };
 type TimerProps = {
   isRunning: boolean;
-  getTime?: (time: TimeType) => void;
+  getTime?: (time:number) => void;
 };
 const Timer = ({ isRunning, getTime }: TimerProps) => {
   const [seconds, setSeconds] = useState(0);
@@ -22,7 +22,7 @@ const Timer = ({ isRunning, getTime }: TimerProps) => {
     let interval: NodeJS.Timer;
     isRunning
       ? (interval = setInterval(() => setSeconds((prev) => prev + 1), 1000))
-      : getTime && getTime(time);
+      : getTime && getTime(seconds);
 
     return () => {
       clearInterval(interval);

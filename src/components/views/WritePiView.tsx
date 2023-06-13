@@ -6,9 +6,7 @@ import {
   Code,
   Divider,
   Flex,
-  Modal,
   PinInput,
-  Portal,
   Stack,
   Text,
   Title,
@@ -21,6 +19,9 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import Timer, { TimeType } from "../common/Timer";
 import { useDisclosure } from "@mantine/hooks";
 import { PI } from "../utils/pi";
+import CustomModal from "../common/CustomModal";
+import { usePostFetch } from "../../api/api_hooks/usePostFetch";
+import { formatSecondsToTime } from "../utils/formatSecondsToTime";
 
 const useStyles = createStyles((theme) => ({
   valid_input: {
@@ -40,13 +41,24 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
   const [enteredDigitsCounter, setEnteredDigitsCounter] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [canEdit, setCanEdit] = useState(true);
-
   const [time, setTime] = useState<TimeType>({
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
-
+  const [seconds, setSeconds] = useState(0);
+  const {loading, response, error, mutate} = usePostFetch("addAttempt");
+  
+  const { control, register, ...methods } = useForm({
+    defaultValues: {
+      digitInputs: [{ value: "" }],
+    },
+  });
+  const { fields, append } = useFieldArray({
+    control,
+    name: "digitInputs",
+  });
+  const [opened, { open, close }] = useDisclosure(false);
   const onChangeHandler = (
     ev: string,
     index: number,
@@ -79,23 +91,19 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
   const onEndAttemptHandler = () => {
     //TODO
     //SAVE DATA TO DATEBASE
+    const data = {
+      enteredDigits: enteredDigitsCounter,
+      mistakes: mistakesCounter,
+      time: seconds
+    };
+    mutate(data);
     setKey((prev) => prev + 1);
-    
   };
-  const getTime = (time: TimeType) => {
-    setTime(time);
+  const getTime = (time:number) => {
+    setSeconds(time);
+    setTime(formatSecondsToTime(time));
   };
-
-  const { control, register, ...methods } = useForm({
-    defaultValues: {
-      digitInputs: [{ value: "" }],
-    },
-  });
-  const { fields, append } = useFieldArray({
-    control,
-    name: "digitInputs",
-  });
-  const [opened, { open, close }] = useDisclosure(false);
+  
   return (
     <>
       <Card shadow="sm" padding="lg" radius="md">
@@ -214,43 +222,42 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
           />
         ))}
       </Flex>
-      <Portal target="#modals">
-        <Modal
-          opened={opened}
-          onClose={close}
-          zIndex={1000}
-          centered
-          closeOnClickOutside={false}
-          closeOnEscape={false}
-          withCloseButton={false}
-        >
-          <Card>
-            <Stack>
-              <Flex gap={5} align="center">
-                <IconClockHour4 color="lightBlue" size={40} />
-                <Text fz="lg">
-                  Time: {time.hours}:{time.minutes}:{time.seconds}
-                </Text>
-              </Flex>
-              <Divider />
-              <Flex align="center" gap={5}>
-                <IconCheck color="green" size={40} />
-                <Text fz="lg">Entered digits: {enteredDigitsCounter}</Text>
-              </Flex>
-              <Divider />
-              <Flex align="center" gap={5}>
-                <IconX color="red" size={40} />
-                <Text fz="lg">Mistakes: {mistakesCounter}</Text>
-              </Flex>
-            </Stack>
-            <Center mt={40}>
-              <Button radius="lg" onClick={() => onEndAttemptHandler()}>
-                Restart
-              </Button>
-            </Center>
-          </Card>
-        </Modal>
-      </Portal>
+
+      <CustomModal
+        opened={opened}
+        onClose={close}
+        zIndex={1000}
+        centered
+        closeOnClickOutside={false}
+        closeOnEscape={false}
+        withCloseButton={false}
+      >
+        <Card>
+          <Stack>
+            <Flex gap={5} align="center">
+              <IconClockHour4 color="lightBlue" size={40} />
+              <Text fz="lg">
+                Time: {time.hours}:{time.minutes}:{time.seconds}
+              </Text>
+            </Flex>
+            <Divider />
+            <Flex align="center" gap={5}>
+              <IconCheck color="green" size={40} />
+              <Text fz="lg">Entered digits: {enteredDigitsCounter}</Text>
+            </Flex>
+            <Divider />
+            <Flex align="center" gap={5}>
+              <IconX color="red" size={40} />
+              <Text fz="lg">Mistakes: {mistakesCounter}</Text>
+            </Flex>
+          </Stack>
+          <Center mt={40}>
+            <Button radius="lg" onClick={() => onEndAttemptHandler()}>
+              Restart
+            </Button>
+          </Center>
+        </Card>
+      </CustomModal>
     </>
   );
 };

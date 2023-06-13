@@ -114,6 +114,7 @@ const DashboardView = () => {
       }}
       to={item.link}
       key={item.label}
+      onClick={() => toggle()}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
       <span>{item.label}</span>
