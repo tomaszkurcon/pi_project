@@ -18,7 +18,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { register } from "../api/auth/register";
 import {  RegisterFields } from "../api/auth/auth_types";
 import { Toaster, toast } from "react-hot-toast";
-import { useLogin } from "../api/hooks/useLogin";
+import { useLogin } from "../api/api_hooks/useLogin";
 
 const AuthForm = (props: PaperProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
