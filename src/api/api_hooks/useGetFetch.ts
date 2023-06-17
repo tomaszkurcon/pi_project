@@ -24,13 +24,14 @@ export const useGetFetch = <T>(url: string, user?:UserType):TQueryState<T> => {
              
     })
       .then((response) => {
-        if (!response.ok) {
-          throw Error("Could not fetch the data");
-        }
         return response.json();
       })
       .then((response) => {
+        if (response.error) {
+          throw Error(response.error);
+        }
         const {data} = response;
+
         setData(data as T);
         setError(null);
         setIsLoading(false);

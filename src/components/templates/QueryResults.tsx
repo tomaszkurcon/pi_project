@@ -21,7 +21,7 @@ const QueryResults = <T,>({
           zIndex={1000}
         />
       ) : error ? (
-        <ApiErrors />
+        <ApiErrors error_message={error}/>
       ) : Array.isArray(data) && data.length == 0 ? (
         <div>No results</div>
       ) : (
