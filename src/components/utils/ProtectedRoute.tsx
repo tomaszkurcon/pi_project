@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { UserType } from "../context/AuthContext";
 
 type ProtectedRouteProps = {
-  user: UserType | null;
+  user?: UserType
 };
 const ProtectedRoute = ({ user }: ProtectedRouteProps) => {
   if (!user) {

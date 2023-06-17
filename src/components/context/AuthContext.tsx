@@ -5,9 +5,9 @@ import { AuthActionType, authReducer } from "./AuthReducer";
 export type UserType = {
   email: string;
   token: string;
-};
+} | null;
 export type AuthContextStateType = {
-  user: UserType | null;
+  user: UserType | undefined | null;
   dispatch: Dispatch<AuthActionType>;
 };
 type AuthContextProviderProps = {
