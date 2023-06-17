@@ -22,6 +22,7 @@ import { PI } from "../utils/pi";
 import CustomModal from "../common/CustomModal";
 import { usePostFetch } from "../../api/api_hooks/usePostFetch";
 import { formatSecondsToTime } from "../utils/formatSecondsToTime";
+import { useAuthContext } from "../../api/api_hooks/useAuthContext";
 
 const useStyles = createStyles((theme) => ({
   valid_input: {
@@ -30,7 +31,11 @@ const useStyles = createStyles((theme) => ({
     outlineColor: "green",
   },
 }));
-
+export type TAttemptStats = {
+  enteredDigits:number
+  mistakes:number
+  time:number
+}
 type WritePiViewProps = {
   setKey: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -47,8 +52,9 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
     seconds: 0,
   });
   const [seconds, setSeconds] = useState(0);
-  const {loading, response, error, mutate} = usePostFetch("addAttempt");
-  
+  const {user} = useAuthContext();
+  const {loading, mutate} = usePostFetch<TAttemptStats>("addAttempt", {onSuccess:() =>setKey((prev)=>prev+1) }, user);
+
   const { control, register, ...methods } = useForm({
     defaultValues: {
       digitInputs: [{ value: "" }],
@@ -89,15 +95,13 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
     }
   };
   const onEndAttemptHandler = () => {
-    //TODO
-    //SAVE DATA TO DATEBASE
-    const data = {
+    const data:TAttemptStats = {
       enteredDigits: enteredDigitsCounter,
       mistakes: mistakesCounter,
       time: seconds
     };
     mutate(data);
-    setKey((prev) => prev + 1);
+
   };
   const getTime = (time:number) => {
     setSeconds(time);

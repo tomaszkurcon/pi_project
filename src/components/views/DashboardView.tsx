@@ -1,4 +1,11 @@
-import { createStyles, Navbar, getStylesRef, rem, Burger } from "@mantine/core";
+import {
+  createStyles,
+  Navbar,
+  getStylesRef,
+  rem,
+  Burger,
+  Flex,
+} from "@mantine/core";
 import {
   IconSettings,
   IconLogout,
@@ -8,17 +15,30 @@ import {
 import { useLogout } from "../../api/api_hooks/useLogout";
 import { useDisclosure } from "@mantine/hooks";
 import { NavLink, Outlet } from "react-router-dom";
+import SwitchThemeButton from "../theme/SwitchThemeButton";
 
 const useStyles = createStyles((theme) => ({
   dashboardContainer: {
     display: "flex",
   },
   header: {
-    paddingBottom: theme.spacing.md,
-    marginBottom: `calc(${theme.spacing.md} * 1.5)`,
-    borderBottom: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
+    position: "sticky",
+    zIndex: 200,
+    width: "100%",
+    top: 0,
+    borderBottom: "1px solid",
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+    borderColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[5]
+        : theme.colors.gray[2],
+    boxShadow: `0 0px 20px  ${
+      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
     }`,
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
+    },
   },
 
   footer: {
@@ -36,8 +56,8 @@ const useStyles = createStyles((theme) => ({
   navbar: {
     transition: "transform 0.2s ease-out",
     [theme.fn.smallerThan("sm")]: {
-      position: "absolute",
-      top: "60px",
+      position: "fixed",
+      top: "73px",
     },
   },
   navbarSlideInAnimation: {
@@ -123,12 +143,17 @@ const DashboardView = () => {
 
   return (
     <div>
-      <Burger
-        opened={!opened}
-        onClick={() => toggle()}
-        className={classes.burger}
-        m={"lg"}
-      />
+      <header className={classes.header}>
+        <Flex justify="space-between" align="center">
+          <Burger
+            opened={!opened}
+            onClick={() => toggle()}
+            className={classes.burger}
+            m={"lg"}
+          />
+          <SwitchThemeButton sx={{ marginRight: 25 }} />
+        </Flex>
+      </header>
       <div className={classes.dashboardContainer}>
         <Navbar
           width={{ sm: 300 }}

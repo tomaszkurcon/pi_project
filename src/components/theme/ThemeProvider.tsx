@@ -27,7 +27,7 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         withGlobalStyles
         withNormalizeCSS
       >
-        <SwitchThemeButton />
+        <SwitchThemeButton sx={(theme) => ({position: "fixed", right: "30px", top: "30px", [theme.fn.smallerThan("sm")]:{display:"none"}})}/>
         {children}
       </MantineProvider>
     </ColorSchemeProvider>
