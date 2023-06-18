@@ -12,17 +12,20 @@ import {
   Flex,
   Title,
   Transition,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useForm, isEmail } from "@mantine/form";
 import { Link, useSearchParams } from "react-router-dom";
-import { register } from "../api/auth/register";
+
 import {  RegisterFields } from "../api/auth/auth_types";
 import { Toaster, toast } from "react-hot-toast";
 import { useLogin } from "../api/api_hooks/useLogin";
+import { register } from "../api/auth/register";
+
 
 const AuthForm = (props: PaperProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const login  = useLogin();
+  const {login, loading}  = useLogin();
   const type = searchParams.get("mode") === "register" ? "register" : "login";
   const form = useForm({
     initialValues: {
@@ -39,7 +42,7 @@ const AuthForm = (props: PaperProps) => {
   useEffect(() => setIsOpen(true), []);
 
   const registerHandler = async (values: RegisterFields) => {
-    const response = await register(values);
+    const response= await register(values);
     const data = await response?.json();
     if (response?.status === 201) {
       setSearchParams({ mode: "login" });
@@ -52,6 +55,15 @@ const AuthForm = (props: PaperProps) => {
 
   return (
     <>
+       {loading && (
+        <LoadingOverlay
+          loaderProps={{ size: "xl", variant: "dots" }}
+          overlayOpacity={0.3}
+          overlayColor="#c5c5c5"
+          visible
+          zIndex={1000}
+        />
+      ) }
       <Toaster />
       <Stack
         justify="center"
