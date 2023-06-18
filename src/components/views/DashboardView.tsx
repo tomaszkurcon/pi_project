@@ -44,6 +44,10 @@ const useStyles = createStyles((theme) => ({
   footer: {
     paddingTop: theme.spacing.md,
     marginTop: theme.spacing.md,
+    [theme.fn.smallerThan("sm")]: {
+      marginBottom:"73px"
+    },
+   
     borderTop: `${rem(1)} solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
     }`,
