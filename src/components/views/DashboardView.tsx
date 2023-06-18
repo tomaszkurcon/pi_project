@@ -26,6 +26,7 @@ const useStyles = createStyles((theme) => ({
     zIndex: 200,
     width: "100%",
     top: 0,
+    height:74,
     borderBottom: "1px solid",
     backgroundColor:
       theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
@@ -59,6 +60,9 @@ const useStyles = createStyles((theme) => ({
   },
   navbar: {
     transition: "transform 0.2s ease-out",
+    display:"flex",
+    flexDirection:"column",
+    justifyContent:"space-between",
     [theme.fn.smallerThan("sm")]: {
       position: "fixed",
       top: "73px",
@@ -166,7 +170,7 @@ const DashboardView = () => {
             opened && classes.navbarSlideInAnimation
           }`}
         >
-          <Navbar.Section grow>{links}</Navbar.Section>
+          <Navbar.Section>{links}</Navbar.Section>
 
           <Navbar.Section className={classes.footer}>
             <span className={classes.link} onClick={() => logout()}>
