@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   createStyles,
   Navbar,
@@ -13,7 +14,7 @@ import {
   IconTorii,
 } from "@tabler/icons-react";
 import { useLogout } from "../../api/api_hooks/useLogout";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { NavLink, Outlet } from "react-router-dom";
 import SwitchThemeButton from "../theme/SwitchThemeButton";
 
@@ -22,11 +23,11 @@ const useStyles = createStyles((theme) => ({
     display: "flex",
   },
   header: {
-    position: "sticky",
     zIndex: 200,
     width: "100%",
+    position: "sticky",
     top: 0,
-    height:74,
+    height: 74,
     borderBottom: "1px solid",
     backgroundColor:
       theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
@@ -46,9 +47,9 @@ const useStyles = createStyles((theme) => ({
     paddingTop: theme.spacing.md,
     marginTop: theme.spacing.md,
     [theme.fn.smallerThan("sm")]: {
-      marginBottom:"73px"
+      marginBottom: "73px",
     },
-   
+
     borderTop: `${rem(1)} solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
     }`,
@@ -60,12 +61,12 @@ const useStyles = createStyles((theme) => ({
   },
   navbar: {
     transition: "transform 0.2s ease-out",
-    display:"flex",
-    flexDirection:"column",
-    justifyContent:"space-between",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
     [theme.fn.smallerThan("sm")]: {
       position: "fixed",
-      top: "73px",
+      top: 74,
     },
   },
   navbarSlideInAnimation: {
@@ -133,6 +134,28 @@ const data = [
 
 const DashboardView = () => {
   const [opened, { toggle }] = useDisclosure(true);
+  const { height } = useViewportSize();
+  //TODO: Make header hide when scrolling down and appear on scrolling up
+  // const navbar = document.getElementById("test")
+  // let offset = 0
+  // const handler = () => {
+  //   let new_offset = window.scrollY
+  //   if(new_offset>offset) {
+
+  //     navbar && (navbar.style.top = "-74px");
+  //     navbar && (navbar.style.position = "sticky")
+  //     navbar && (navbar.style.transition = `top 0.2s ease-in-out`)
+  //   }
+  //   else {
+  //    navbar && (navbar.style.top = "0px")
+  //    navbar && (navbar.style.transition = `top 0.2s ease-in-out`)
+  //   }
+  //   offset = new_offset
+
+  // }
+
+  // useWindowEvent('scroll', handler);
+
   const logout = useLogout();
   const { classes } = useStyles();
   const links = data.map((item) => (
@@ -151,7 +174,7 @@ const DashboardView = () => {
 
   return (
     <div>
-      <header className={classes.header}>
+      <header id="test" className={`${classes.header}`}>
         <Flex justify="space-between" align="center">
           <Burger
             opened={!opened}
@@ -165,6 +188,7 @@ const DashboardView = () => {
       <div className={classes.dashboardContainer}>
         <Navbar
           width={{ sm: 300 }}
+          height={height}
           p="md"
           className={`${classes.navbar} ${
             opened && classes.navbarSlideInAnimation

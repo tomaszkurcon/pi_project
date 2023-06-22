@@ -12,7 +12,7 @@ const useStyles = createStyles((theme) => ({
 const MainTemplate = () => {
   const { classes } = useStyles();
   return (
-    <Container p="xl" className={classes.container} size={"100rem"}>
+    <Container p="lg" className={classes.container} size={"100rem"}>
       <Outlet />
     </Container>
   );
