@@ -5,11 +5,12 @@ import View404 from "./components/views/View404";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
 import { useAuthContext } from "./api/api_hooks/useAuthContext";
 import DashboardView from "./components/views/DashboardView";
-import SettingsView from "./components/views/SettingsView";
+
 import MainTemplate from "./components/templates/MainTemplate";
 
 import RankingView from "./components/views/RankingView";
 import WritePiViewWithKey from "./components/views/WritePiView";
+import UserProfileView from "./components/views/UserProfileView";
 
 const App = () => {
   const { user } = useAuthContext();
@@ -23,7 +24,7 @@ const App = () => {
               <Route path="/" element={<MainTemplate />}>
                 <Route index element={<WritePiViewWithKey />} />
                 <Route path="/rank" element={<RankingView/>} />
-                <Route path="/settings" element={<SettingsView />} />
+                <Route path="/settings" element={<UserProfileView />} />
               </Route>
             </Route>
           </Route>

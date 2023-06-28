@@ -21,6 +21,8 @@ import SwitchThemeButton from "../theme/SwitchThemeButton";
 const useStyles = createStyles((theme) => ({
   dashboardContainer: {
     display: "flex",
+    maxWidth:"2300px",
+    margin:'0 auto',
   },
   header: {
     zIndex: 200,
@@ -173,8 +175,8 @@ const DashboardView = () => {
   ));
 
   return (
-    <div>
-      <header id="test" className={`${classes.header}`}>
+    <div >
+      <header  className={`${classes.header}`}>
         <Flex justify="space-between" align="center">
           <Burger
             opened={!opened}
