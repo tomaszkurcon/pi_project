@@ -131,7 +131,7 @@ const useStyles = createStyles((theme) => ({
 const data = [
   { link: "/", label: "Play", icon: IconTorii },
   { link: "/rank", label: "Ranking", icon: IconAwardFilled },
-  { link: "/settings", label: "User Settings", icon: IconSettings },
+  { link: "/user-profile", label: "User Profile", icon: IconSettings },
 ];
 
 const DashboardView = () => {

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Avatar,
   BackgroundImage,
@@ -7,8 +8,16 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import TabsTemplate from "../templates/TabsTemplate";
+import { getLastElemenetUrl } from "../utils/getLastElementUrl";
 
 const UserProfileView = () => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    getLastElemenetUrl(pathname) === "user-profile" && navigate("overview");
+  }, []);
   return (
     <>
       <BackgroundImage
@@ -23,7 +32,7 @@ const UserProfileView = () => {
         <Box
           component="div"
           sx={() => ({
-            transform: "translate(70px, 130px)",
+            transform: "translate(35px, 130px)",
             display: "flex",
             alignItems: "center",
             gap: "10px",
@@ -54,9 +63,13 @@ const UserProfileView = () => {
           </Flex>
         </Box>
       </BackgroundImage>
-      <Card radius="lg" shadow="sm" p={0} mt={170}>
-        hi
-      </Card>
+      <Box mt={170} ml={20}>
+        <TabsTemplate tabsConfig={["Overview", "Settings"]}/>
+        <Outlet />
+        {/* <Card radius="lg" shadow="sm" p={0} >
+       
+        </Card> */}
+      </Box>
     </>
   );
 };

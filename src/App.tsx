@@ -11,6 +11,8 @@ import MainTemplate from "./components/templates/MainTemplate";
 import RankingView from "./components/views/RankingView";
 import WritePiViewWithKey from "./components/views/WritePiView";
 import UserProfileView from "./components/views/UserProfileView";
+import UserProfileOverview from "./components/views/user_profile/UserProfileOverview";
+import UserProfileSettings from "./components/views/user_profile/UserProfileSettings";
 
 const App = () => {
   const { user } = useAuthContext();
@@ -24,7 +26,10 @@ const App = () => {
               <Route path="/" element={<MainTemplate />}>
                 <Route index element={<WritePiViewWithKey />} />
                 <Route path="/rank" element={<RankingView/>} />
-                <Route path="/settings" element={<UserProfileView />} />
+                <Route path="/user-profile" element={<UserProfileView />} >
+                  <Route path="overview" element={<UserProfileOverview />} />
+                  <Route path="settings" element={<UserProfileSettings />} />
+                </Route>
               </Route>
             </Route>
           </Route>
