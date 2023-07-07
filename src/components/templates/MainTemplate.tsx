@@ -12,7 +12,7 @@ const useStyles = createStyles((theme) => ({
 const MainTemplate = () => {
   const { classes } = useStyles();
   return (
-    <Container p="lg" className={classes.container} size={"100%"} mt={15}>
+    <Container p="md" className={classes.container} size={"100%"} mt={15}>
       <Outlet />
     </Container>
   );

@@ -73,7 +73,13 @@ const RankingView = () => {
   const theme = useMantineTheme();
   const matches = useMediaQuery(`(min-width:${theme.breakpoints.sm})`);
   const avatar = (
-    <Avatar alt="Avatar for badge" radius="xl" size={"md"} mr={5} src="https://images.pexels.com/photos/16628785/pexels-photo-16628785/free-photo-of-fashion-love-woman-dark.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" />
+    <Avatar
+      alt="Avatar for badge"
+      radius="xl"
+      size={"md"}
+      mr={5}
+      src="https://images.pexels.com/photos/16628785/pexels-photo-16628785/free-photo-of-fashion-love-woman-dark.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    />
   );
   return (
     <QueryResults<TAttempts> data={data} {...queryState}>
@@ -107,34 +113,40 @@ const RankingView = () => {
           </Title>
           <div className={classes.container}>
             {data?.map((attempt) => (
-              <Card
-                key={attempt._id}
-                shadow="sm"
-                padding="lg"
-                radius="md"
-         
-              >
+              <Card key={attempt._id} shadow="sm" padding="lg" radius="md">
                 <Badge
                   pl={0}
                   size="xl"
                   radius="lg"
                   leftSection={avatar}
-                  styles={{root:{overflow:"visible"}}}
+                  styles={{ root: { overflow: "visible" } }}
                 >
                   {attempt.email}
                 </Badge>
 
                 <Flex align="center" gap={6} mt={4} mb={6}>
-                  <Text fw={700} size="lg">Entered Digits:</Text>
-                  <Badge radius="sm" size="lg" p={4} color="teal">{attempt.enteredDigits}</Badge>
+                  <Text fw={700} size="lg">
+                    Entered Digits:
+                  </Text>
+                  <Badge radius="sm" size="lg" p={4} color="teal">
+                    {attempt.enteredDigits}
+                  </Badge>
                 </Flex>
                 <Flex align="center" gap={6} mb={6}>
-                  <Text fw={700} size="lg">Mistakes:</Text>
-                  <Badge color="red" radius="sm" size="lg" p={4}>{attempt.mistakes}</Badge>
+                  <Text fw={700} size="lg">
+                    Mistakes:
+                  </Text>
+                  <Badge color="red" radius="sm" size="lg" p={4}>
+                    {attempt.mistakes}
+                  </Badge>
                 </Flex>
                 <Flex align="center" gap={6}>
-                  <Text fw={700} size="lg">Time:</Text>
-                  <Badge color="yellow" radius="sm" size="lg" p={4}>{createStringFromTime(attempt.time)}</Badge>
+                  <Text fw={700} size="lg">
+                    Time:
+                  </Text>
+                  <Badge color="yellow" radius="sm" size="lg" p={4}>
+                    {createStringFromTime(attempt.time)}
+                  </Badge>
                 </Flex>
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                   <Text color="dimmed">

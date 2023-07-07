@@ -27,15 +27,24 @@ const UserProfileView = () => {
           borderRadius: "20px 20px 0 0",
           display: "flex",
           alignItems: "flex-end",
+          position: "relative",
         }}
       >
         <Box
           component="div"
-          sx={() => ({
-            transform: "translate(35px, 130px)",
+          sx={(theme) => ({
+            flexGrow: 1,
             display: "flex",
+            position: "relative",
             alignItems: "center",
-            gap: "10px",
+            bottom: "-150px",
+            flexDirection: "column",
+            [theme.fn.largerThan("md")]: {
+              flexDirection: "row",
+              transform: "translate(35px, 130px)",
+              bottom: 0,
+              gap: "10px",
+            },
           })}
         >
           <Box
@@ -54,8 +63,17 @@ const UserProfileView = () => {
               size={180}
             />
           </Box>
-          <Flex mt={60} align="center" gap={"70px"}>
-            <Flex direction="column">
+          <Flex
+            sx={(theme) => ({ [theme.fn.largerThan("md")]: { marginTop: 60 } })}
+            align="center"
+            gap={{ md: "70px" }}
+          >
+            <Flex
+              direction="column"
+              sx={(theme) => ({
+                [theme.fn.smallerThan("sm")]: { textAlign: "center" },
+              })}
+            >
               <Title order={3}>John Hustler</Title>
               <Text color="dimmed">username</Text>
             </Flex>
@@ -63,8 +81,11 @@ const UserProfileView = () => {
           </Flex>
         </Box>
       </BackgroundImage>
-      <Box mt={170} ml={20}>
-        <TabsTemplate tabsConfig={["Overview", "Settings"]}/>
+      <Box
+        mt={170}
+        sx={(theme) => ({ [theme.fn.largerThan("lg")]: { marginLeft: 20 } })}
+      >
+        <TabsTemplate tabsConfig={["Overview", "Settings"]} />
         <Outlet />
         {/* <Card radius="lg" shadow="sm" p={0} >
        

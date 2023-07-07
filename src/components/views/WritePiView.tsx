@@ -24,6 +24,7 @@ import { usePostFetch } from "../../api/api_hooks/usePostFetch";
 import { formatSecondsToTime } from "../utils/formatSecondsToTime";
 import { useAuthContext } from "../../api/api_hooks/useAuthContext";
 
+
 const useStyles = createStyles((theme) => ({
   valid_input: {
     borderColor: "green",
@@ -32,10 +33,10 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 export type TAttemptStats = {
-  enteredDigits:number
-  mistakes:number
-  time:number
-}
+  enteredDigits: number;
+  mistakes: number;
+  time: number;
+};
 type WritePiViewProps = {
   setKey: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -52,8 +53,12 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
     seconds: 0,
   });
   const [seconds, setSeconds] = useState(0);
-  const {user} = useAuthContext();
-  const {loading, mutate} = usePostFetch<TAttemptStats>("addAttempt", {onSuccess:() =>setKey((prev)=>prev+1) }, user);
+  const { user } = useAuthContext();
+  const { loading, mutate } = usePostFetch<TAttemptStats>(
+    "addAttempt",
+    { onSuccess: () => setKey((prev) => prev + 1) },
+    user
+  );
 
   const { control, register, ...methods } = useForm({
     defaultValues: {
@@ -65,11 +70,8 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
     name: "digitInputs",
   });
   const [opened, { open, close }] = useDisclosure(false);
-  const onChangeHandler = (
-    ev: string,
-    index: number,
-    fields_length: number
-  ) => {
+  const onChangeHandler = (ev: string, index: number) => {
+    const fields_length = fields.length;
     if (index == 0) {
       setIsRunning(true);
     }
@@ -95,19 +97,18 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
     }
   };
   const onEndAttemptHandler = () => {
-    const data:TAttemptStats = {
+    const data: TAttemptStats = {
       enteredDigits: enteredDigitsCounter,
       mistakes: mistakesCounter,
-      time: seconds
+      time: seconds,
     };
     mutate(data);
-
   };
-  const getTime = (time:number) => {
+  const getTime = (time: number) => {
     setSeconds(time);
     setTime(formatSecondsToTime(time));
   };
-  
+
   return (
     <>
       <Card shadow="sm" padding="lg" radius="md">
@@ -212,11 +213,12 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
                 <PinInput
                   {...field}
                   ref={ref}
+                  type="number"
                   error={error2}
                   length={1}
                   placeholder=""
                   value={value}
-                  onChange={(ev) => onChangeHandler(ev, index, fields.length)}
+                  onChange={(ev) => onChangeHandler(ev, index)}
                   autoFocus={index > 0 && true}
                   classNames={isValid ? { input: classes.valid_input } : {}}
                   disabled={!canEdit}
