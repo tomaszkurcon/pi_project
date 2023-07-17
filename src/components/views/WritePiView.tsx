@@ -22,7 +22,7 @@ import { PI } from "../utils/pi";
 import CustomModal from "../common/CustomModal";
 import { usePostFetch } from "../../api/api_hooks/usePostFetch";
 import { formatSecondsToTime } from "../utils/formatSecondsToTime";
-import { useAuthContext } from "../../api/api_hooks/useAuthContext";
+
 
 
 const useStyles = createStyles((theme) => ({
@@ -53,11 +53,9 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
     seconds: 0,
   });
   const [seconds, setSeconds] = useState(0);
-  const { user } = useAuthContext();
   const { loading, mutate } = usePostFetch<TAttemptStats>(
-    "addAttempt",
+    "dashboard/addAttempt",
     { onSuccess: () => setKey((prev) => prev + 1) },
-    user
   );
 
   const { control, register, ...methods } = useForm({

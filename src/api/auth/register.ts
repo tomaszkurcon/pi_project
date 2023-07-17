@@ -1,4 +1,5 @@
 
+import { API_URL } from "../../config/env";
 import { RegisterFields } from "./auth_types";
 
 
@@ -10,7 +11,7 @@ export const register = async (data: RegisterFields) => {
   };
 
   try {
-    const response = await fetch("http://localhost:5000/register", {
+    const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

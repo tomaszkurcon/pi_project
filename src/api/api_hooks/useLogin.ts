@@ -14,7 +14,7 @@ export const useLogin = () => {
     };
     try {
       setIsLoading(true)
-      const response = await fetch(`${API_URL}/login`, {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export const useLogin = () => {
       });
       const json = await response.json();
       if (response.ok) {
-        localStorage.setItem("user", JSON.stringify(json));
+        localStorage.setItem("authTokens", JSON.stringify(json));
         dispatch({ type: "LOGIN", payload: json });
       } else {
         toast.error(json.msg);

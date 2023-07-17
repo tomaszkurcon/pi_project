@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ThemeProvider from "./components/theme/ThemeProvider";
 import LandingPageView from "./components/views/LandingPageView";
 import View404 from "./components/views/View404";
-import ProtectedRoute from "./components/utils/ProtectedRoute";
+
 import { useAuthContext } from "./api/api_hooks/useAuthContext";
 import DashboardView from "./components/views/DashboardView";
 
@@ -13,6 +13,7 @@ import WritePiViewWithKey from "./components/views/WritePiView";
 import UserProfileView from "./components/views/UserProfileView";
 import UserProfileOverview from "./components/views/user_profile/UserProfileOverview";
 import UserProfileSettings from "./components/views/user_profile/UserProfileSettings";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 const App = () => {
   const { user } = useAuthContext();

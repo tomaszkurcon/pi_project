@@ -1,24 +1,12 @@
 import {
-    Avatar,
-    Badge,
-    Box,
-    Card,
-    Flex,
-    Table,
-    Text,
-    Title,
     createStyles,
     rem,
-    useMantineTheme,
   } from "@mantine/core";
-  import { useAuthContext } from "../../api/api_hooks/useAuthContext";
-  import { useGetFetch } from "../../api/api_hooks/useGetFetch";
+
   
   import { createStringFromTime } from "../utils/createStringFromTime";
   import moment from "moment";
-  import QueryResults from "../templates/QueryResults";
-  import { useMediaQuery } from "@mantine/hooks";
-  
+
   const useStyles = createStyles((theme) => ({
     table: {
       width: "100%",

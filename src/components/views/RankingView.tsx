@@ -4,14 +4,12 @@ import {
   Box,
   Card,
   Flex,
-  Table,
   Text,
   Title,
   createStyles,
   rem,
   useMantineTheme,
 } from "@mantine/core";
-import { useAuthContext } from "../../api/api_hooks/useAuthContext";
 import { useGetFetch } from "../../api/api_hooks/useGetFetch";
 
 import { createStringFromTime } from "../utils/createStringFromTime";
@@ -67,8 +65,7 @@ type TAttempts = Array<{
   email: string;
 }>;
 const RankingView = () => {
-  const { user } = useAuthContext();
-  const { data, ...queryState } = useGetFetch<TAttempts>("getAttempts", user);
+  const { data, ...queryState } = useGetFetch<TAttempts>("dashboard/getAttempts");
   const { classes } = useStyles();
   const theme = useMantineTheme();
   const matches = useMediaQuery(`(min-width:${theme.breakpoints.sm})`);

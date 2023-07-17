@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { API_URL } from "../../config/env";
 import { UserType } from "../../components/context/AuthContext";
-
+import fetchInstance from "../../components/utils/fetchInstance";
 type usePostFetchOptionsProps = {
   onSuccess?: () => void;
   onError?: () => void;
@@ -9,21 +9,12 @@ type usePostFetchOptionsProps = {
 export const usePostFetch = <TData>(
   url: string,
   options?: usePostFetchOptionsProps,
-  user?:UserType
 ) => {
   const [error, setError] = useState(null);
   const [loading, setIsLoading] = useState(false);
   const [response, setResponse] = useState();
-  const headers = new Headers({
-    "Content-Type": "application/json",
-  })
 
-  if(user) {
-    headers.append('Authorization', `Bearer ${user.token}`)
-  }
-  const mutate = (data: TData) => {
-    setIsLoading(true);
-
+  const fetchFunction = (data: TData, headers: Headers) =>
     fetch(`${API_URL}/${url}`, {
       method: "POST",
       headers: headers,
@@ -48,8 +39,10 @@ export const usePostFetch = <TData>(
         setError(err.message);
         options?.onError && options?.onError();
       });
+  const mutate = (data: TData) => {
+    setIsLoading(true);
+    fetchInstance((headers) => fetchFunction(data, headers));
   };
 
   return { response, loading, error, mutate };
 };
-

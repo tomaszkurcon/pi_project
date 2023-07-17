@@ -3,8 +3,8 @@ import { createContext, useReducer } from "react";
 import { AuthActionType, authReducer } from "./AuthReducer";
 
 export type UserType = {
-  email: string;
-  token: string;
+  accessToken: string;
+  refreshToken:string
 } | null;
 export type AuthContextStateType = {
   user: UserType | undefined | null;
@@ -22,7 +22,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     dispatch: () => null,
   });
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("authTokens");
     if (user) {
       dispatch({ type: "LOGIN", payload: JSON.parse(user) });
     }
