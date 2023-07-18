@@ -6,6 +6,7 @@ import {
   rem,
   Burger,
   Flex,
+  Box,
 } from "@mantine/core";
 import {
   IconSettings,
@@ -14,15 +15,15 @@ import {
   IconTorii,
 } from "@tabler/icons-react";
 import { useLogout } from "../../api/api_hooks/useLogout";
-import { useDisclosure, useViewportSize } from "@mantine/hooks";
+import { useDisclosure, useHeadroom, useViewportSize } from "@mantine/hooks";
 import { NavLink, Outlet } from "react-router-dom";
 import SwitchThemeButton from "../theme/SwitchThemeButton";
 
 const useStyles = createStyles((theme) => ({
   dashboardContainer: {
     display: "flex",
-    maxWidth:"2300px",
-    margin:'0 auto',
+    maxWidth: "2300px",
+    margin: "0 auto",
   },
   header: {
     zIndex: 200,
@@ -137,26 +138,7 @@ const data = [
 const DashboardView = () => {
   const [opened, { toggle }] = useDisclosure(true);
   const { height } = useViewportSize();
-  //TODO: Make header hide when scrolling down and appear on scrolling up
-  // const navbar = document.getElementById("test")
-  // let offset = 0
-  // const handler = () => {
-  //   let new_offset = window.scrollY
-  //   if(new_offset>offset) {
-
-  //     navbar && (navbar.style.top = "-74px");
-  //     navbar && (navbar.style.position = "sticky")
-  //     navbar && (navbar.style.transition = `top 0.2s ease-in-out`)
-  //   }
-  //   else {
-  //    navbar && (navbar.style.top = "0px")
-  //    navbar && (navbar.style.transition = `top 0.2s ease-in-out`)
-  //   }
-  //   offset = new_offset
-
-  // }
-
-  // useWindowEvent('scroll', handler);
+  const pinned = useHeadroom({ fixedAt: 200 });
 
   const logout = useLogout();
   const { classes } = useStyles();
@@ -175,8 +157,15 @@ const DashboardView = () => {
   ));
 
   return (
-    <div >
-      <header  className={`${classes.header}`}>
+    <div>
+      <Box
+        component="header"
+        sx={{
+          transform: `translate3d(0, ${pinned ? 0 : rem(-110)}, 0)`,
+          transition: "transform 400ms ease",
+        }}
+        className={`${classes.header}`}
+      >
         <Flex justify="space-between" align="center">
           <Burger
             opened={!opened}
@@ -186,7 +175,8 @@ const DashboardView = () => {
           />
           <SwitchThemeButton sx={{ marginRight: 25 }} />
         </Flex>
-      </header>
+      </Box>
+
       <div className={classes.dashboardContainer}>
         <Navbar
           width={{ sm: 300 }}

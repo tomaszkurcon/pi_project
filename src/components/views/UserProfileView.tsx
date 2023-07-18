@@ -1,23 +1,31 @@
 import { useEffect } from "react";
 import {
+  ActionIcon,
   Avatar,
   BackgroundImage,
   Box,
-  Card,
   Flex,
   Text,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import TabsTemplate from "../templates/TabsTemplate";
 import { getLastElemenetUrl } from "../utils/getLastElementUrl";
+import { IconPencil } from "@tabler/icons-react";
+import CustomModal from "../common/CustomModal";
+import { useDisclosure } from "@mantine/hooks";
+import DropzoneMantine from "../common/DropzoneMantine";
+
 
 const UserProfileView = () => {
+  const [opened, { open, close }] = useDisclosure(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
     getLastElemenetUrl(pathname) === "user-profile" && navigate("overview");
   }, []);
+  const theme = useMantineTheme();
   return (
     <>
       <BackgroundImage
@@ -30,6 +38,14 @@ const UserProfileView = () => {
           position: "relative",
         }}
       >
+        <ActionIcon
+          sx={{ position: "absolute", right: "25px", top: "85%", zIndex: 999 }}
+          variant="filled"
+          radius="md"
+        >
+          <IconPencil />
+        </ActionIcon>
+
         <Box
           component="div"
           sx={(theme) => ({
@@ -40,6 +56,7 @@ const UserProfileView = () => {
             bottom: "-150px",
             flexDirection: "column",
             [theme.fn.largerThan("md")]: {
+              flexGrow: 0,
               flexDirection: "row",
               transform: "translate(35px, 130px)",
               bottom: 0,
@@ -47,22 +64,38 @@ const UserProfileView = () => {
             },
           })}
         >
-          <Box
-            sx={(theme) => ({
-              borderRadius: "50%",
-              overflow: "hidden",
-              border: `3px solid ${
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[7]
-                  : theme.colors.gray[0]
-              }`,
-            })}
-          >
-            <Avatar
-              src="https://images.pexels.com/photos/6964367/pexels-photo-6964367.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              size={180}
-            />
+          <Box component="div" sx={{ position: "relative" }}>
+            <ActionIcon
+              sx={{
+                position: "absolute",
+                zIndex: 999,
+                left: "70%",
+                top: "85%",
+              }}
+              onClick={open}
+              variant="filled"
+              radius="md"
+            >
+              <IconPencil />
+            </ActionIcon>
+            <Box
+              sx={(theme) => ({
+                borderRadius: "50%",
+                overflow: "hidden",
+                border: `3px solid ${
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[7]
+                    : theme.colors.gray[0]
+                }`,
+              })}
+            >
+              <Avatar
+                src="https://images.pexels.com/photos/6964367/pexels-photo-6964367.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                size={180}
+              />
+            </Box>
           </Box>
+
           <Flex
             sx={(theme) => ({ [theme.fn.largerThan("md")]: { marginTop: 60 } })}
             align="center"
@@ -91,6 +124,9 @@ const UserProfileView = () => {
        
         </Card> */}
       </Box>
+      <CustomModal opened={opened} onClose={close} zIndex={1000} centered withCloseButton={false} size={800}>
+        <DropzoneMantine/>
+      </CustomModal>
     </>
   );
 };
