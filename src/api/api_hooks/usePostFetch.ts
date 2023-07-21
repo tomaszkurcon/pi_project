@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { API_URL } from "../../config/env";
-import { UserType } from "../../components/context/AuthContext";
 import fetchInstance from "../../components/utils/fetchInstance";
 type usePostFetchOptionsProps = {
   onSuccess?: () => void;

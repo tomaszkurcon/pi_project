@@ -7,7 +7,6 @@ import {
   Flex,
   Text,
   Title,
-  useMantineTheme,
 } from "@mantine/core";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import TabsTemplate from "../templates/TabsTemplate";
@@ -16,7 +15,13 @@ import { IconPencil } from "@tabler/icons-react";
 import CustomModal from "../common/CustomModal";
 import { useDisclosure } from "@mantine/hooks";
 import DropzoneMantine from "../common/DropzoneMantine";
+import { useGetFetch } from "../../api/api_hooks/useGetFetch";
+import QueryResults from "../templates/QueryResults";
 
+
+type TUserData = {
+  base64:string
+}
 
 const UserProfileView = () => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -25,9 +30,10 @@ const UserProfileView = () => {
   useEffect(() => {
     getLastElemenetUrl(pathname) === "user-profile" && navigate("overview");
   }, []);
-  const theme = useMantineTheme();
+  const { data, ...queryState } = useGetFetch<TUserData>("files/getFile");
+
   return (
-    <>
+    <QueryResults<TUserData> data={data} {...queryState}>
       <BackgroundImage
         src="https://images.pexels.com/photos/10040637/pexels-photo-10040637.jpeg?auto=compress&cs=tinysrgb&w=1600"
         h={240}
@@ -90,7 +96,7 @@ const UserProfileView = () => {
               })}
             >
               <Avatar
-                src="https://images.pexels.com/photos/6964367/pexels-photo-6964367.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                src={data?.base64}
                 size={180}
               />
             </Box>
@@ -127,7 +133,7 @@ const UserProfileView = () => {
       <CustomModal opened={opened} onClose={close} zIndex={1000} centered withCloseButton={false} size={800}>
         <DropzoneMantine/>
       </CustomModal>
-    </>
+    </QueryResults>
   );
 };
 
