@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ActionIcon,
   Avatar,
@@ -11,31 +11,36 @@ import {
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import TabsTemplate from "../templates/TabsTemplate";
 import { getLastElemenetUrl } from "../utils/getLastElementUrl";
-import { IconPencil } from "@tabler/icons-react";
+import { IconPencil, IconUser } from "@tabler/icons-react";
 import CustomModal from "../common/CustomModal";
-import { useDisclosure } from "@mantine/hooks";
+
 import DropzoneMantine from "../common/DropzoneMantine";
 import { useGetFetch } from "../../api/api_hooks/useGetFetch";
 import QueryResults from "../templates/QueryResults";
-
+import fallbackImage from "../../assets/fallbackImage.png";
+import ImageCropper from "../common/ImageCropper";
 
 type TUserData = {
-  base64:string
-}
+  name?: string;
+  surname?: string;
+  username?: string;
+  profileImage?: string;
+  backgroundImage?: string;
+};
 
 const UserProfileView = () => {
-  const [opened, { open, close }] = useDisclosure(false);
+  const [opened, setOpened] = useState("");
   const { pathname } = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
     getLastElemenetUrl(pathname) === "user-profile" && navigate("overview");
   }, []);
-  const { data, ...queryState } = useGetFetch<TUserData>("files/getFile");
-
+  const { data, ...queryState } = useGetFetch<TUserData>("dashboard/getUser");
+ 
   return (
     <QueryResults<TUserData> data={data} {...queryState}>
       <BackgroundImage
-        src="https://images.pexels.com/photos/10040637/pexels-photo-10040637.jpeg?auto=compress&cs=tinysrgb&w=1600"
+        src={data?.backgroundImage || fallbackImage}
         h={240}
         sx={{
           borderRadius: "20px 20px 0 0",
@@ -48,6 +53,7 @@ const UserProfileView = () => {
           sx={{ position: "absolute", right: "25px", top: "85%", zIndex: 999 }}
           variant="filled"
           radius="md"
+          onClick={() => setOpened("backgroundImage")}
         >
           <IconPencil />
         </ActionIcon>
@@ -78,7 +84,7 @@ const UserProfileView = () => {
                 left: "70%",
                 top: "85%",
               }}
-              onClick={open}
+              onClick={() => setOpened("profileImage")}
               variant="filled"
               radius="md"
             >
@@ -95,10 +101,9 @@ const UserProfileView = () => {
                 }`,
               })}
             >
-              <Avatar
-                src={data?.base64}
-                size={180}
-              />
+              <Avatar src={data?.profileImage} size={180}>
+                <IconUser size={150} />
+              </Avatar>
             </Box>
           </Box>
 
@@ -130,8 +135,16 @@ const UserProfileView = () => {
        
         </Card> */}
       </Box>
-      <CustomModal opened={opened} onClose={close} zIndex={1000} centered withCloseButton={false} size={800}>
-        <DropzoneMantine/>
+      <CustomModal
+        opened={opened ? true : false}
+        onClose={() => setOpened("")}
+        zIndex={1000}
+        centered
+        withCloseButton={false}
+        size={800}
+        p={0}
+      >
+        <DropzoneMantine type={opened} />
       </CustomModal>
     </QueryResults>
   );

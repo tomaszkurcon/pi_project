@@ -8,6 +8,7 @@ type usePostFetchOptionsProps = {
 export const usePostFetch = <TData>(
   url: string,
   options?: usePostFetchOptionsProps,
+  method?:string,
 ) => {
   const [error, setError] = useState(null);
   const [loading, setIsLoading] = useState(false);
@@ -15,7 +16,7 @@ export const usePostFetch = <TData>(
 
   const fetchFunction = (data: TData, headers: Headers) =>
     fetch(`${API_URL}/${url}`, {
-      method: "POST",
+      method: method || "POST",
       headers: headers,
       body: JSON.stringify({
         data: data,
