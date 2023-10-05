@@ -1,15 +1,17 @@
 import "cropperjs/dist/cropper.css";
-import { useRef } from "react";
-import { Cropper, ReactCropperElement } from "react-cropper";
+import { Dispatch, SetStateAction, useRef } from "react";
+import { Cropper, ReactCropperElement, ReactCropperProps } from "react-cropper";
 
 type TImageCropperProps = {
-    src:string
-}
-const ImageCropper = ({src, ...props}:TImageCropperProps) => {
+    src:string,
+    setBase64:Dispatch<SetStateAction<string | ArrayBuffer | undefined>>
+} & ReactCropperProps
+const ImageCropper = ({src, setBase64, ...props}:TImageCropperProps) => {
     const cropperRef = useRef<ReactCropperElement>(null);
     const onCrop = () => {
       const cropper = cropperRef.current?.cropper;
-    //   console.log(cropper?.getCroppedCanvas().toDataURL());
+      setBase64(cropper?.getCroppedCanvas().toDataURL())
+ 
     };
     return (
       <Cropper
@@ -20,7 +22,7 @@ const ImageCropper = ({src, ...props}:TImageCropperProps) => {
         crop={onCrop}
         zoomable={false}
         ref={cropperRef}
-        
+        {...props}
       />
     )
 }

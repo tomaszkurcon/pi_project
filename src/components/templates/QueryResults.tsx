@@ -9,7 +9,7 @@ const QueryResults = <T,>({
   loading,
   error,
   data,
-}: QueryResultsProps & TQueryState<T>) => {
+}: QueryResultsProps & Partial<TQueryState<T>>) => {
   return (
     <>
       {loading ? (

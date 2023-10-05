@@ -30,13 +30,14 @@ type TUserData = {
 
 const UserProfileView = () => {
   const [opened, setOpened] = useState("");
+  
   const { pathname } = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
     getLastElemenetUrl(pathname) === "user-profile" && navigate("overview");
   }, []);
-  const { data, ...queryState } = useGetFetch<TUserData>("dashboard/getUser");
- 
+  const { data, refetch,...queryState } = useGetFetch<TUserData>("dashboard/getUser");
+  const imagePreview = opened == "backgroundImage" ? data?.backgroundImage : data?.profileImage
   return (
     <QueryResults<TUserData> data={data} {...queryState}>
       <BackgroundImage
@@ -144,7 +145,7 @@ const UserProfileView = () => {
         size={800}
         p={0}
       >
-        <DropzoneMantine type={opened} />
+        <DropzoneMantine type={opened} closeModal={setOpened} refetch={refetch} recentImagePreview={imagePreview}/>
       </CustomModal>
     </QueryResults>
   );

@@ -1,5 +1,13 @@
-import { useState } from "react";
-import { Group, Text, useMantineTheme, rem, Button, Flex } from "@mantine/core";
+import { Dispatch, SetStateAction, useState } from "react";
+import {
+  Group,
+  Text,
+  useMantineTheme,
+  rem,
+  Button,
+  Flex,
+  LoadingOverlay,
+} from "@mantine/core";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
 import {
   Dropzone,
@@ -10,35 +18,93 @@ import {
 import { convertToBase64 } from "../utils/convertToBase64";
 import { usePostFetch } from "../../api/api_hooks/usePostFetch";
 import ImageCropper from "./ImageCropper";
+import DeleteButton from "./DeleteButton";
+
 type TDropzoneMantine = {
   type: string;
+  closeModal: Dispatch<SetStateAction<string>>;
+  refetch: () => void;
+  recentImagePreview?: string;
 } & Partial<DropzoneProps>;
-const DropzoneMantine = ({ type, ...props }: TDropzoneMantine) => {
-  const [imagePreview, setImagePreview] = useState<string>("");
+const DropzoneMantine = ({
+  type,
+  closeModal,
+  refetch,
+  recentImagePreview,
+  ...props
+}: TDropzoneMantine) => {
+  const [imagePreview, setImagePreview] = useState<string>(
+    recentImagePreview || ""
+  );
+  const [base64, setBase64] = useState<string | ArrayBuffer | undefined>("");
+
   const { loading, mutate } = usePostFetch(
     "files/upload",
-    {},
+    {
+      onSuccess: () => {
+        refetch();
+        closeModal("");
+      },
+    },
     "PUT"
   );
 
   const theme = useMantineTheme();
+  const aspectRatio = type == "backgroundImage" ? 6 : 1;
   const handleFileUpload = async (files: FileWithPath[]) => {
     const file = files[0];
     const base64 = await convertToBase64(file);
+    base64 && setBase64(base64);
     typeof base64 === "string" && setImagePreview(base64);
-    
-    // mutate({base64:base64, type:type})
   };
   return (
     <>
+      {loading && (
+        <LoadingOverlay
+          loaderProps={{ size: "xl", variant: "dots" }}
+          overlayOpacity={0.3}
+          overlayColor="#c5c5c5"
+          visible
+          zIndex={1000}
+        />
+      )}
       {imagePreview ? (
         <>
-        <ImageCropper src={imagePreview}/>
-        <Flex gap={30} justify="center" mt={10}>
-        <Button color="teal">Accept</Button>
-        <Button onClick={()=> {setImagePreview("")}}>Select another image</Button>
-        </Flex>
-       
+          <ImageCropper
+            src={imagePreview}
+            setBase64={setBase64}
+            aspectRatio={aspectRatio}
+          />
+          <Flex
+            gap={30}
+            justify="center"
+            mt={10}
+            direction={{ base: "column", sm: "row" }}
+          >
+            <Button
+              color="teal"
+              onClick={() => {
+                mutate({ base64: base64, type: type });
+              }}
+            >
+              Accept
+            </Button>
+            <DeleteButton
+              url="files/delete"
+              type={type}
+              onSuccess={() => {
+                closeModal("");
+                refetch();
+              }}
+            />
+            <Button
+              onClick={() => {
+                setImagePreview("");
+              }}
+            >
+              Select another image
+            </Button>
+          </Flex>
         </>
       ) : (
         <Dropzone

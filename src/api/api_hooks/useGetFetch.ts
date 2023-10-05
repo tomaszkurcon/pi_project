@@ -6,7 +6,8 @@ import fetchInstance from '../../components/utils/fetchInstance'
 export type TQueryState<T> = {
   loading:boolean;
   error:any;
-  data?:T
+  data?:T;
+  refetch: () => void
 }
 export const useGetFetch = <T>(url: string):TQueryState<T> => {
   const [error, setError] = useState(null);
@@ -36,5 +37,5 @@ export const useGetFetch = <T>(url: string):TQueryState<T> => {
     fetchInstance(fetchFunction)
   }, []);
 
-  return { error, loading, data };
+  return { error, loading, data, refetch:() => {fetchInstance(fetchFunction)} };
 };
