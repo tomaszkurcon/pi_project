@@ -11,9 +11,11 @@ export const authReducer: Reducer<AuthContextStateType, AuthActionType> = (
 ) => {
   switch (action.type) {
     case "LOGIN":
-      return {...state, user: action.payload};
+      return {...state, user: action.payload, expiredToken:false};
     case "LOGOUT":
       return { ...state, user: null };
+    case "AUTO-LOGOUT":
+      return {...state, user:null, expiredToken:true}
     default:
       return state;
   }

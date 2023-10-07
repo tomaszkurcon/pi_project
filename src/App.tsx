@@ -16,13 +16,13 @@ import UserProfileSettings from "./components/views/user_profile/UserProfileSett
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
 const App = () => {
-  const { user } = useAuthContext();
+  const { user, expiredToken } = useAuthContext();
 
   return (
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-          <Route element={<ProtectedRoute user={user} />}>
+          <Route element={<ProtectedRoute user={user} expiredToken={expiredToken}/>}>
             <Route path="/" element={<DashboardView />}>
               <Route path="/" element={<MainTemplate />}>
                 <Route index element={<WritePiViewWithKey />} />

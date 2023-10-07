@@ -6,6 +6,7 @@ import {
   Code,
   Divider,
   Flex,
+  LoadingOverlay,
   PinInput,
   Stack,
   Text,
@@ -22,8 +23,7 @@ import { PI } from "../utils/pi";
 import CustomModal from "../common/CustomModal";
 import { usePostFetch } from "../../api/api_hooks/usePostFetch";
 import { formatSecondsToTime } from "../utils/formatSecondsToTime";
-
-
+import toast from "react-hot-toast";
 
 const useStyles = createStyles((theme) => ({
   valid_input: {
@@ -53,9 +53,12 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
     seconds: 0,
   });
   const [seconds, setSeconds] = useState(0);
-  const { loading, mutate } = usePostFetch<TAttemptStats>(
+  const { loading, mutate, error } = usePostFetch<TAttemptStats>(
     "dashboard/addAttempt",
-    { onSuccess: () => setKey((prev) => prev + 1) },
+    {
+      onSuccess: () => setKey((prev) => prev + 1),
+      onError: () => toast.error("We couldn't save your attempt"),
+    }
   );
 
   const { control, register, ...methods } = useForm({
@@ -109,6 +112,15 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
 
   return (
     <>
+      {loading && (
+        <LoadingOverlay
+          loaderProps={{ size: "xl", variant: "dots" }}
+          overlayOpacity={0.3}
+          overlayColor="#c5c5c5"
+          visible
+          zIndex={2000}
+        />
+      )}
       <Card shadow="sm" padding="lg" radius="md">
         <Center sx={{ marginBottom: 40 }}>
           <Stack align="center" sx={{ textAlign: "center" }}>

@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { API_URL } from "../../config/env";
 import fetchInstance from "../../components/utils/fetchInstance";
+import { useAutoLogout } from "./useAutoLogout";
+
+
 type usePostFetchOptionsProps = {
   onSuccess?: () => void;
   onError?: () => void;
@@ -13,6 +16,7 @@ export const usePostFetch = <TData>(
   const [error, setError] = useState(null);
   const [loading, setIsLoading] = useState(false);
   const [response, setResponse] = useState();
+  const autoLogout = useAutoLogout()
 
   const fetchFunction = (data: TData, headers: Headers) =>
     fetch(`${API_URL}/${url}`, {
@@ -41,7 +45,7 @@ export const usePostFetch = <TData>(
       });
   const mutate = (data: TData) => {
     setIsLoading(true);
-    fetchInstance((headers) => fetchFunction(data, headers));
+    fetchInstance((headers) => fetchFunction(data, headers), autoLogout);
   };
 
   return { response, loading, error, mutate };
