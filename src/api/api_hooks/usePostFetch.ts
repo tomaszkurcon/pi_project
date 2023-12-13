@@ -3,49 +3,50 @@ import { API_URL } from "../../config/env";
 import fetchInstance from "../../components/utils/fetchInstance";
 import { useAutoLogout } from "./useAutoLogout";
 
-
-type usePostFetchOptionsProps = {
-  onSuccess?: () => void;
-  onError?: () => void;
+type usePostFetchOptionsProps<T> = {
+  onSuccess?: (res?:T) => void;
+  onError?: (err?:string) => void;
+  withTokens?: boolean;
 };
-export const usePostFetch = <TData>(
+export const usePostFetch = <TData, TResponse = {msg:string} | undefined>(
   url: string,
-  options?: usePostFetchOptionsProps,
-  method?:string,
+  { withTokens = true, ...options }: usePostFetchOptionsProps<TResponse>,
+  method?: string
 ) => {
   const [error, setError] = useState(null);
   const [loading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState();
-  const autoLogout = useAutoLogout()
+  const [response, setResponse] = useState<TResponse>();
+  const autoLogout = useAutoLogout();
 
-  const fetchFunction = (data: TData, headers: Headers) =>
+  const fetchFunction = (data: TData, headers?: Headers) =>
     fetch(`${API_URL}/${url}`, {
       method: method || "POST",
-      headers: headers,
+      headers: headers ?? { "Content-Type": "application/json" },
       body: JSON.stringify({
         data: data,
       }),
     })
+    .then((response) => response.json())
       .then((response) => {
-        if (!response.ok) {
-          throw Error("Could not fetch the data");
+        if (response.error) {
+          throw Error(response.error);
         }
-        return response.json();
-      })
-      .then((res) => {
-        setResponse(res);
+        setResponse(response);
         setIsLoading(false);
         setError(null);
-        options?.onSuccess && options?.onSuccess();
+        options?.onSuccess && options?.onSuccess(response);
       })
       .catch((err) => {
         setIsLoading(false);
         setError(err.message);
-        options?.onError && options?.onError();
+        options?.onError && options?.onError(err.message);
       });
+
   const mutate = (data: TData) => {
     setIsLoading(true);
-    fetchInstance((headers) => fetchFunction(data, headers), autoLogout);
+    withTokens
+      ? fetchInstance((headers) => fetchFunction(data, headers), autoLogout)
+      : fetchFunction(data);
   };
 
   return { response, loading, error, mutate };

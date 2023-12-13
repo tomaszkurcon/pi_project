@@ -14,6 +14,8 @@ import UserProfileView from "./components/views/UserProfileView";
 import UserProfileOverview from "./components/views/user_profile/UserProfileOverview";
 import UserProfileSettings from "./components/views/user_profile/UserProfileSettings";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import ResetPasswordView from "./components/views/ResetPasswordView";
+
 
 const App = () => {
   const { user, expiredToken } = useAuthContext();
@@ -22,12 +24,14 @@ const App = () => {
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-          <Route element={<ProtectedRoute user={user} expiredToken={expiredToken}/>}>
+          <Route
+            element={<ProtectedRoute user={user} expiredToken={expiredToken} />}
+          >
             <Route path="/" element={<DashboardView />}>
               <Route path="/" element={<MainTemplate />}>
                 <Route index element={<WritePiViewWithKey />} />
-                <Route path="/rank" element={<RankingView/>} />
-                <Route path="/user-profile" element={<UserProfileView />} >
+                <Route path="/rank" element={<RankingView />} />
+                <Route path="/user-profile" element={<UserProfileView />}>
                   <Route path="overview" element={<UserProfileOverview />} />
                   <Route path="settings" element={<UserProfileSettings />} />
                 </Route>
@@ -37,6 +41,10 @@ const App = () => {
           <Route
             path="/auth"
             element={!user ? <LandingPageView /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/reset-password"
+            element={!user ? <ResetPasswordView /> : <Navigate to="/" />}
           />
           <Route path="*" element={<View404 />} />
         </Routes>
