@@ -141,8 +141,8 @@ const AuthForm = (props: PaperProps) => {
                 </AnchorLink>
 
                 {type === "login" && (
-                  <AnchorLink to={"/reset-password"}>
-                    <Text>Forgot passowrd? Reset</Text>
+                  <AnchorLink to={"/forgot-password"}>
+                    <Text>Forgot password? Reset</Text>
                   </AnchorLink>
                 )}
               </Stack>

@@ -14,8 +14,9 @@ import UserProfileView from "./components/views/UserProfileView";
 import UserProfileOverview from "./components/views/user_profile/UserProfileOverview";
 import UserProfileSettings from "./components/views/user_profile/UserProfileSettings";
 import ProtectedRoute from "./components/common/ProtectedRoute";
-import ResetPasswordView from "./components/views/ResetPasswordView";
-
+import ForgotPasswordView from "./components/views/reset_password/ForgotPasswordView";
+import ResetPasswordView from "./components/views/reset_password/ResetPasswordView";
+import PublicRoute from "./components/common/PublicRoute";
 
 const App = () => {
   const { user, expiredToken } = useAuthContext();
@@ -38,14 +39,11 @@ const App = () => {
               </Route>
             </Route>
           </Route>
-          <Route
-            path="/auth"
-            element={!user ? <LandingPageView /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/reset-password"
-            element={!user ? <ResetPasswordView /> : <Navigate to="/" />}
-          />
+          <Route element={<PublicRoute user={user} />}>
+            <Route path="/auth" element={<LandingPageView />} />
+            <Route path="/forgot-password" element={<ForgotPasswordView />} />
+            <Route path="/reset-password" element={<ResetPasswordView />} />
+          </Route>
           <Route path="*" element={<View404 />} />
         </Routes>
       </BrowserRouter>
