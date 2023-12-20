@@ -26,7 +26,7 @@ export const useLogin = () => {
         localStorage.setItem("authTokens", JSON.stringify(json));
         dispatch({ type: "LOGIN", payload: json });
       } else {
-        toast.error(json.msg);
+        toast.error(json.error);
       }
       setIsLoading(false)
     } catch (error) {

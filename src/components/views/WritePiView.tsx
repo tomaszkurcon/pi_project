@@ -57,7 +57,7 @@ const WritePiView = ({ setKey }: WritePiViewProps) => {
     "dashboard/addAttempt",
     {
       onSuccess: () => setKey((prev) => prev + 1),
-      onError: () => toast.error("We couldn't save your attempt"),
+      onError: (err) => { setKey((prev) => prev + 1); console.log(err, "error")},
     }
   );
 

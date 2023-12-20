@@ -7,26 +7,26 @@ import {
   Group,
   PaperProps,
   Button,
-  Anchor,
   Stack,
   Flex,
   Title,
   Transition,
   LoadingOverlay,
+  Text,
 } from "@mantine/core";
 import { useForm, isEmail } from "@mantine/form";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
-import {  RegisterFields } from "../api/auth/auth_types";
+import { RegisterFields } from "../api/auth/auth_types";
 import { Toaster, toast } from "react-hot-toast";
 import { useLogin } from "../api/api_hooks/useLogin";
 import { register } from "../api/auth/register";
-
+import AnchorLink from "./common/AnchorLink";
 
 const AuthForm = (props: PaperProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const {login, loading}  = useLogin();
-  const type = searchParams.get("mode") === "register" ? "register" : "login";
+  const { login, loading } = useLogin();
+  const type = searchParams.get("mode") || "login";
   const form = useForm({
     initialValues: {
       email: "",
@@ -42,20 +42,20 @@ const AuthForm = (props: PaperProps) => {
   useEffect(() => setIsOpen(true), []);
 
   const registerHandler = async (values: RegisterFields) => {
-    const response= await register(values);
+    const response = await register(values);
     const data = await response?.json();
     if (response?.status === 201) {
       setSearchParams({ mode: "login" });
       form.reset();
       toast.success(data.msg);
     } else {
-      toast.error(data.msg);
+      toast.error(data.error);
     }
   };
 
   return (
     <>
-       {loading && (
+      {loading && (
         <LoadingOverlay
           loaderProps={{ size: "xl", variant: "dots" }}
           overlayOpacity={0.3}
@@ -63,7 +63,7 @@ const AuthForm = (props: PaperProps) => {
           visible
           zIndex={1000}
         />
-      ) }
+      )}
       <Toaster />
       <Stack
         justify="center"
@@ -125,18 +125,28 @@ const AuthForm = (props: PaperProps) => {
             </Stack>
 
             <Group position="apart" mt="xl">
-              <Link to={`?mode=${type === "login" ? "register" : "login"}`}>
-                <Anchor
-                  component="button"
-                  type="button"
-                  color="dimmed"
-                  size="xs"
+              <Stack sx={{ gap: 0 }}>
+                <AnchorLink
+                  to={`?mode=${type === "login" ? "register" : "login"}`}
                 >
-                  {type === "register"
-                    ? "Already have an account? Login"
-                    : "Don't have an account? Register"}
-                </Anchor>
-              </Link>
+                  {type === "register" ? (
+                    <>
+                      <Text>Already have an account? Login</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text>Don't have an account? Register</Text>
+                    </>
+                  )}
+                </AnchorLink>
+
+                {type === "login" && (
+                  <AnchorLink to={"/forgot-password"}>
+                    <Text>Forgot password? Reset</Text>
+                  </AnchorLink>
+                )}
+              </Stack>
+
               <Button type="submit" radius="xl">
                 {upperFirst(type)}
               </Button>
