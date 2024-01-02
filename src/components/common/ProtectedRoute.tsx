@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { UserType } from "../context/AuthContext";
 import CustomModal from "./CustomModal";
 import { Alert, Button, Flex, Text } from "@mantine/core";

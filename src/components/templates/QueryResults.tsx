@@ -1,4 +1,4 @@
-import {  LoadingOverlay } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 import { TQueryState } from "../../api/api_hooks/useGetFetch";
 import ApiErrors from "../common/ApiErrors";
 type QueryResultsProps = {
@@ -9,6 +9,7 @@ const QueryResults = <T,>({
   loading,
   error,
   data,
+  isRefetching,
 }: QueryResultsProps & Partial<TQueryState<T>>) => {
   return (
     <>
@@ -21,11 +22,24 @@ const QueryResults = <T,>({
           zIndex={1000}
         />
       ) : error ? (
-        <ApiErrors error_message={error}/>
-      ) : Array.isArray(data) && data.length == 0 ? (
+        <ApiErrors error_message={error} />
+      ) : Array.isArray(data) && data.length === 0 ? (
         <div>No results</div>
       ) : (
-        children
+        <>
+          {isRefetching && (
+            <LoadingOverlay
+              loaderProps={{ size: "xl", variant: "dots" }}
+              overlayOpacity={0.3}
+              overlayColor="#c5c5c5"
+              visible
+              zIndex={1000}
+              sx={{ position: "fixed" }}
+            />
+          )}
+
+          {children}
+        </>
       )}
     </>
   );

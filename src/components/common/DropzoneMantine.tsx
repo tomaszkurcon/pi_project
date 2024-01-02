@@ -42,7 +42,6 @@ const DropzoneMantine = ({
     "files/upload",
     {
       onSuccess: () => {
-        refetch();
         closeModal("");
       },
     },
@@ -84,7 +83,7 @@ const DropzoneMantine = ({
             <Button
               color="teal"
               onClick={() => {
-                mutate({ base64: base64, type: type });
+                mutate({ base64: base64, type: type }, refetch);
               }}
             >
               Accept

@@ -18,8 +18,8 @@ export const refreshToken = async (refreshToken: string) => {
   return data;
 };
 const customFetcher = async (
-  cb: (headers: Headers) => Promise<void>,
-  cb2: () => void
+  cb: (headers: Headers) => Promise<boolean>,
+  autoLogout: () => void
 ) => {
   let tokens = localStorage.getItem("authTokens");
   let authTokens = tokens ? JSON.parse(tokens) : null;
@@ -31,8 +31,8 @@ const customFetcher = async (
       authTokens = await refreshToken(authTokens.refreshToken);
     } catch (error) {
       localStorage.removeItem("authTokens");
-      cb2();
-      return;
+      autoLogout();
+      return false;
     }
   }
 
@@ -41,7 +41,8 @@ const customFetcher = async (
     Authorization: `Bearer ${authTokens.accessToken}`,
   });
 
-  cb(headers);
+  await cb(headers);
+  return true
 };
 
 export default customFetcher;
