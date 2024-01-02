@@ -24,7 +24,7 @@ const ResetPasswordView = () => {
     },
     "PUT"
   );
-  console.log(error)
+
   return (
     <ResetForgotPasswordModal
       title={!response ? "Reset your password" : ""}

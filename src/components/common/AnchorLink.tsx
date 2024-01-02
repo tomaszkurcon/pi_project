@@ -5,15 +5,16 @@ import { Link } from "react-router-dom";
 type AnchorLinkProps = {
   children: React.ReactNode;
   to: string;
+  onClick?: () => void;
 } & AnchorProps;
-const AnchorLink = ({ children, to, ...props }: AnchorLinkProps) => {
+const AnchorLink = ({ children, to,onClick, ...props }: AnchorLinkProps) => {
   return (
-    <Link to={to}>
+    <Link to={to} onClick={onClick}>
       <Anchor
         component="button"
         type="button"
         color="dimmed"
-        size="xs"
+
         {...props}
       >
         <Group>{children}</Group>

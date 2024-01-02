@@ -18,7 +18,7 @@ import { useForm, isEmail } from "@mantine/form";
 import { useSearchParams } from "react-router-dom";
 
 import { RegisterFields } from "../api/auth/auth_types";
-import { Toaster, toast } from "react-hot-toast";
+import {  toast } from "react-hot-toast";
 import { useLogin } from "../api/api_hooks/useLogin";
 import { register } from "../api/auth/register";
 import AnchorLink from "./common/AnchorLink";
@@ -64,7 +64,6 @@ const AuthForm = (props: PaperProps) => {
           zIndex={1000}
         />
       )}
-      <Toaster />
       <Stack
         justify="center"
         align="flex-end"
@@ -127,6 +126,7 @@ const AuthForm = (props: PaperProps) => {
             <Group position="apart" mt="xl">
               <Stack sx={{ gap: 0 }}>
                 <AnchorLink
+                size="xs"
                   to={`?mode=${type === "login" ? "register" : "login"}`}
                 >
                   {type === "register" ? (
@@ -141,7 +141,7 @@ const AuthForm = (props: PaperProps) => {
                 </AnchorLink>
 
                 {type === "login" && (
-                  <AnchorLink to={"/forgot-password"}>
+                  <AnchorLink to={"/forgot-password"} size="xs">
                     <Text>Forgot password? Reset</Text>
                   </AnchorLink>
                 )}

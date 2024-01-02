@@ -180,6 +180,8 @@ const DashboardView = () => {
       <div className={classes.dashboardContainer}>
         <Navbar
           width={{ sm: 300 }}
+          pos={"sticky"}
+          top={0}
           height={height}
           p="md"
           className={`${classes.navbar} ${
